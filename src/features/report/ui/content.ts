@@ -130,39 +130,73 @@ export const caserneFunnelChain =
 /* ------------------------------------------------------------------ */
 /* Médias                                                               */
 /* ------------------------------------------------------------------ */
+/* Captures issues des fiches App Store. Chacune est placée dans la      */
+/* section qu’elle documente plutôt que rassemblée en fin de page.       */
 
-export const caserneShots = [
-  {
+export const caserneMedia = {
+  /** Hero : la promesse publicitaire, telle que l’utilisateur la reçoit. */
+  promesse: {
     src: "/apps/caserne/shot-1.jpg",
-    alt: "Écran d’accueil de Caserne : deviens pompier en 4 mois",
+    alt: "Écran d’accueil de Caserne : deviens pompier en 4 mois, 3 jours d’essai gratuit",
+    kicker: "Après le clic · la promesse",
+    caption:
+      "Le premier écran vu par l’utilisateur qui vient de la publicité. Même promesse que les créatives, et l’essai gratuit annoncé dès l’ouverture.",
   },
-  {
+  /** 03 Acquis : le choix de parcours, première étape de l’onboarding. */
+  onboarding: {
     src: "/apps/caserne/shot-2.jpg",
-    alt: "Choix du concours dans Caserne : caporal, sergent, BSPP, JSP",
+    alt: "Choix du concours dans Caserne : caporal SPP, sergent, pompier de Paris, jeune sapeur-pompier",
+    kicker: "Onboarding · choix du concours",
+    caption:
+      "L’étape qui suit l’installation. C’est ce passage que 7 utilisateurs sur 10 franchissent jusqu’au démarrage de l’essai.",
   },
-  {
-    src: "/apps/caserne/shot-3.jpg",
-    alt: "Tableau de bord quotidien et suivi de progression dans Caserne",
-  },
-  {
+  /** 04 Attention : ce que l’abonnement doit justifier pendant l’essai. */
+  valeur: {
     src: "/apps/caserne/shot-4.jpg",
-    alt: "Modules de préparation : QCM, cours et tests blancs dans Caserne",
+    alt: "Plan personnalisé Caporal SPP dans Caserne : QCM, cours et sous-modules",
+    kicker: "Pendant l’essai · la valeur",
+    caption:
+      "Le plan de préparation débloqué par l’essai. C’est cet écran qui doit justifier l’abonnement avant la fin de la période gratuite.",
   },
-  { src: "/apps/caserne/shot-5.jpg", alt: "Outils métier et sessions courtes dans Caserne" },
-] as const;
+  /** 08 Produit : le quotidien et l’entraînement. */
+  quotidien: {
+    src: "/apps/caserne/shot-3.jpg",
+    alt: "Tableau de bord quotidien de Caserne : objectif du jour et reprise de session",
+    kicker: "Quotidien · progression",
+    caption: "Objectif du jour, série en cours et reprise de session : le moteur de rétention.",
+  },
+  entrainement: {
+    src: "/apps/caserne/shot-5.jpg",
+    alt: "Entraînement dans Caserne : sessions de 5 minutes et outils métier",
+    kicker: "Entraînement · outils métier",
+    caption:
+      "Sessions de 5 minutes et outils de terrain : l’argument qui distingue l’application d’un manuel.",
+  },
+} as const;
 
-export const gdlpShots = [
-  {
+export const caserneGallery = [caserneMedia.quotidien, caserneMedia.entrainement] as const;
+
+export const gdlpMedia = {
+  /** Hero : la promesse, base des futures créatives. */
+  promesse: {
     src: "/apps/gdlp/shot-1.jpg",
-    alt: "Écran d’accueil de Gardien de la Paix : décroche le concours",
-    wide: false,
+    alt: "Écran d’ouverture de Gardien de la Paix : réussis le concours de gardien de la paix",
+    kicker: "Fiche App Store · la promesse",
+    caption:
+      "L’écran d’ouverture de l’application. C’est ce visuel qui servira de base aux premières créatives publicitaires.",
   },
-  {
+  /** 03 Produit : le quotidien, identique en logique à Caserne. */
+  quotidien: {
     src: "/apps/gdlp/shot-2.jpg",
-    alt: "Session quotidienne et modules de QCM officiels dans Gardien de la Paix",
+    alt: "Session quotidienne et QCM officiels dans Gardien de la Paix",
+    kicker: "Quotidien · session de 5 minutes",
+    caption:
+      "Session du jour, QCM officiels corrigés et suivi de progression. Même logique de rétention que Caserne, dans une identité marine et or.",
     wide: true,
   },
-] as const;
+} as const;
+
+export const gdlpGallery = [gdlpMedia.quotidien] as const;
 
 /* ------------------------------------------------------------------ */
 /* Applications                                                         */
@@ -172,6 +206,7 @@ export const apps = {
   caserne: {
     key: "caserne",
     nav: "Caserne · Pompier",
+    navShort: "Caserne",
     name: "Caserne",
     segment: "Pompier",
     icon: "/apps/caserne/icon.png",
@@ -182,6 +217,7 @@ export const apps = {
   gdlp: {
     key: "gdlp",
     nav: "Gardien de la Paix",
+    navShort: "Gardien",
     name: "Gardien de la Paix",
     segment: "Police nationale",
     icon: "/apps/gdlp/icon.png",

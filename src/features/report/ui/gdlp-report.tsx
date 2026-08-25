@@ -1,6 +1,19 @@
 import Link from "next/link";
-import { Callout, Hero, Item, List, P, ReportShell, Section, Shots, reportStyles } from "./shell";
-import { apps, caserneFunnelChain, gdlpShots } from "./content";
+import {
+  Bench,
+  Callout,
+  Hero,
+  Item,
+  List,
+  P,
+  ReportShell,
+  Section,
+  Shots,
+  reportStyles,
+} from "./shell";
+import { apps, caserneDerived, caserneFunnelChain, fmt, gdlpGallery, gdlpMedia } from "./content";
+
+const d = caserneDerived;
 
 /** Rapport Meta Ads pour Gardien de la Paix : aucune campagne active à ce jour. */
 export function GdlpReport() {
@@ -11,6 +24,7 @@ export function GdlpReport() {
         title="Aucune campagne"
         titleAccent="active à ce jour."
         sub="Aucune campagne Meta Ads n’est en diffusion sur l’audience Gardien de la Paix. Il n’y a donc aucune donnée publicitaire à analyser à ce stade. Cette audience sera traitée séparément dès qu’une campagne dédiée sera lancée."
+        art={gdlpMedia.promesse}
       />
 
       {/* 01 — ÉTAT */}
@@ -37,6 +51,32 @@ export function GdlpReport() {
           Les mêmes indicateurs que sur la campagne Pompier, pour que les deux audiences restent
           comparables ligne à ligne.
         </P>
+        <Bench
+          items={[
+            {
+              app: "caserne",
+              title: "Caserne · Pompier",
+              meta: (
+                <>
+                  Référence mesurée : <b>{fmt.eur(d.cpm)}</b> de CPM,{" "}
+                  <b>{fmt.eur(d.coutParTelechargement)}</b> par téléchargement,{" "}
+                  <b>{fmt.pct(d.tauxEssai)}</b> de passage à l’essai.
+                </>
+              ),
+            },
+            {
+              app: "gdlp",
+              title: "Gardien de la Paix",
+              active: true,
+              meta: (
+                <>
+                  À mesurer : les <b>trois mêmes indicateurs</b> seront publiés ici dès la première
+                  semaine de diffusion, puis comparés à la colonne de gauche.
+                </>
+              ),
+            },
+          ]}
+        />
         <List>
           <Item>
             <b>Budget dépensé</b> et <b>impressions</b> servies.
@@ -70,10 +110,15 @@ export function GdlpReport() {
       {/* 03 — L’APPLICATION */}
       <Section id="app" num="03 · Produit" title="L’application à promouvoir">
         <P>{apps.gdlp.tagline}</P>
-        <Shots items={gdlpShots} />
         <P>
-          Ces visuels sont ceux de la fiche App Store. Ils constitueront la base de travail des
-          premières créatives publicitaires, avec l’angle à définir avant le lancement.
+          L’identité est nettement différente de celle de Caserne : bleu marine, or et titrage en
+          serif, là où l’application Pompier joue le noir et le rouge feu. Les créatives ne pourront
+          donc pas être de simples reprises de celles qui fonctionnent déjà sur l’audience Pompier.
+        </P>
+        <Shots items={gdlpGallery} />
+        <P>
+          Ces visuels sont ceux de la fiche App Store. Ils constituent la base de travail des
+          premières créatives, avec l’angle publicitaire à définir avant le lancement.
         </P>
       </Section>
     </ReportShell>

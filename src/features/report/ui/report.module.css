@@ -1,6 +1,8 @@
 /* ------------------------------------------------------------------ */
 /* Rapport Meta Ads. Chaque page porte le theme de son application :    */
 /* [data-app="caserne"] et [data-app="gdlp"] redefinissent les tokens.  */
+/* Les palettes sont relevees des captures App Store des deux apps :    */
+/* Caserne = noir + rouge feu ; Gardien de la Paix = marine + or.       */
 /* ------------------------------------------------------------------ */
 
 .root {
@@ -8,18 +10,21 @@
   --bg-alt: #111113;
   --surface: #17171a;
   --surface-2: #1e1e22;
-  --line: rgba(255, 255, 255, 0.1);
-  --line-strong: rgba(255, 255, 255, 0.18);
+  --header: #17171c;
+  --footer: #131317;
+  --line: rgba(255, 255, 255, 0.12);
+  --line-strong: rgba(255, 255, 255, 0.22);
   --ink: #ffffff;
-  --slate: #b6b7bd;
-  --muted: #7c7d86;
+  --slate: #c7c8cf;
+  --muted: #9698a2;
   --accent: #e2231a;
   --accent-ink: #ff6b62;
-  --accent-soft: rgba(226, 35, 26, 0.12);
+  --accent-soft: rgba(226, 35, 26, 0.14);
+  --accent-on: #ffffff;
   --ok: #34d399;
-  --ok-soft: rgba(52, 211, 153, 0.12);
+  --ok-soft: rgba(52, 211, 153, 0.13);
   --warn: #fbbf24;
-  --warn-soft: rgba(251, 191, 36, 0.12);
+  --warn-soft: rgba(251, 191, 36, 0.13);
   --rf-display: var(--font-display);
   --radius: 16px;
   --shadow: 0 18px 46px rgba(0, 0, 0, 0.5);
@@ -32,25 +37,36 @@
   line-height: 1.6;
 }
 
+/* Caserne : noir profond, rouge feu, grotesque. */
 .root[data-app="caserne"] {
   --bg: #070708;
   --bg-alt: #0e0e10;
   --surface: #151517;
-  --surface-2: #1c1c1f;
+  --surface-2: #1e1e22;
+  --header: #191920;
+  --footer: #141418;
   --accent: #e2231a;
   --accent-ink: #ff7a72;
-  --accent-soft: rgba(226, 35, 26, 0.13);
+  --accent-soft: rgba(226, 35, 26, 0.15);
+  --accent-on: #ffffff;
 }
 
+/* Gardien de la Paix : bleu marine, or, serif d’affichage. */
 .root[data-app="gdlp"] {
-  --bg: #080b1a;
+  --bg: #080b18;
   --bg-alt: #0d1226;
-  --surface: #131934;
-  --surface-2: #1a2140;
-  --line: rgba(255, 255, 255, 0.11);
-  --accent: #7c5cff;
-  --accent-ink: #a690ff;
-  --accent-soft: rgba(124, 92, 255, 0.16);
+  --surface: #141a33;
+  --surface-2: #1c2444;
+  --header: #1a2350;
+  --footer: #121a3c;
+  --line: rgba(199, 214, 255, 0.14);
+  --line-strong: rgba(199, 214, 255, 0.26);
+  --slate: #c8cee4;
+  --muted: #97a0c0;
+  --accent: #c9a227;
+  --accent-ink: #e8c86e;
+  --accent-soft: rgba(201, 162, 39, 0.16);
+  --accent-on: #1b1403;
   --rf-display: var(--font-serif);
 }
 
@@ -60,26 +76,35 @@
   position: sticky;
   top: 0;
   z-index: 30;
-  background: color-mix(in srgb, var(--bg) 88%, transparent);
-  backdrop-filter: blur(12px);
-  -webkit-backdrop-filter: blur(12px);
-  border-bottom: 1px solid var(--line);
+  background: color-mix(in srgb, var(--header) 93%, transparent);
+  backdrop-filter: blur(14px) saturate(150%);
+  -webkit-backdrop-filter: blur(14px) saturate(150%);
+  border-bottom: 1px solid var(--line-strong);
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.07),
+    0 10px 28px rgba(0, 0, 0, 0.35);
+}
+
+.headerAccent {
+  height: 2px;
+  background: linear-gradient(90deg, var(--accent), transparent 72%);
 }
 
 .headerInner {
   max-width: 1080px;
   margin: 0 auto;
-  padding: 13px clamp(18px, 4vw, 40px);
+  padding: 11px clamp(14px, 4vw, 40px);
   display: flex;
   align-items: center;
   justify-content: space-between;
-  gap: 16px;
+  flex-wrap: wrap;
+  gap: 10px 16px;
 }
 
 .brand {
   display: inline-flex;
   align-items: center;
-  gap: 10px;
+  gap: 11px;
   text-decoration: none;
 }
 
@@ -87,6 +112,10 @@
   height: 22px;
   width: auto;
   display: block;
+  background: #fff;
+  border-radius: 8px;
+  padding: 5px 9px;
+  box-sizing: content-box;
 }
 
 .brandTag {
@@ -95,41 +124,80 @@
   font-weight: 600;
   letter-spacing: 1.6px;
   text-transform: uppercase;
-  color: var(--muted);
-  padding-left: 10px;
-  border-left: 1px solid var(--line);
+  color: var(--slate);
+  padding-left: 11px;
+  border-left: 1px solid var(--line-strong);
 }
 
 .nav {
   display: flex;
-  gap: 6px;
+  gap: 8px;
   flex-wrap: wrap;
 }
 
+/* Les deux onglets restent lisibles : fond plein + bordure visible, jamais un
+   simple texte sur fond sombre. L’onglet courant se distingue par l’accent. */
 .navLink {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
   font-family: var(--font-display);
   font-size: 12.5px;
   font-weight: 600;
-  color: var(--slate);
+  color: var(--ink);
   text-decoration: none;
-  padding: 7px 13px;
+  padding: 6px 14px 6px 7px;
   border-radius: 999px;
-  border: 1px solid transparent;
+  background: rgba(255, 255, 255, 0.06);
+  border: 1px solid var(--line-strong);
   transition:
     color 0.15s ease,
     background-color 0.15s ease,
     border-color 0.15s ease;
 }
 
+.navIcon {
+  width: 22px;
+  height: 22px;
+  border-radius: 7px;
+  display: block;
+  border: 1px solid var(--line);
+}
+
 .navLink:hover {
-  color: var(--ink);
-  background: var(--surface);
+  background: rgba(255, 255, 255, 0.13);
+  border-color: var(--accent-ink);
+}
+
+.navFull {
+  display: inline;
+}
+
+.navShort {
+  display: none;
+}
+
+/* Sous 620px, le libelle long et la mention de marque feraient deborder la
+   barre : on garde le logo, les icones et un libelle court. */
+@media (max-width: 620px) {
+  .brandTag {
+    display: none;
+  }
+
+  .navFull {
+    display: none;
+  }
+
+  .navShort {
+    display: inline;
+  }
 }
 
 .navLinkActive {
   color: var(--ink);
   background: var(--accent-soft);
-  border-color: color-mix(in srgb, var(--accent) 45%, transparent);
+  border-color: color-mix(in srgb, var(--accent) 62%, transparent);
+  box-shadow: 0 0 0 1px color-mix(in srgb, var(--accent) 26%, transparent);
 }
 
 /* ---- Hero ---- */
@@ -139,14 +207,35 @@
   overflow: hidden;
   border-bottom: 1px solid var(--line);
   background:
-    radial-gradient(120% 90% at 82% 0%, var(--accent-soft), transparent 62%),
+    radial-gradient(110% 85% at 88% 4%, var(--accent-soft), transparent 60%),
     linear-gradient(180deg, var(--bg-alt), var(--bg));
 }
 
 .heroInner {
   max-width: 1080px;
   margin: 0 auto;
-  padding: clamp(44px, 7vw, 84px) clamp(18px, 4vw, 40px) clamp(30px, 4vw, 44px);
+  padding: clamp(38px, 6vw, 72px) clamp(18px, 4vw, 40px) clamp(30px, 4vw, 44px);
+}
+
+/* Texte a gauche, capture de l’app a droite. Sous 900px, la capture passe
+   dessous et se recentre plutot que de disparaitre. */
+.heroGrid {
+  display: grid;
+  gap: clamp(26px, 4vw, 48px);
+  align-items: center;
+}
+
+@media (min-width: 900px) {
+  .heroGrid {
+    grid-template-columns: minmax(0, 1fr) minmax(0, 296px);
+  }
+}
+
+.heroArt {
+  margin: 0;
+  justify-self: center;
+  width: 100%;
+  max-width: 296px;
 }
 
 .heroTop {
@@ -187,7 +276,7 @@
 .heroTitle {
   font-family: var(--rf-display);
   font-weight: 700;
-  font-size: clamp(32px, 6vw, 54px);
+  font-size: clamp(30px, 5.2vw, 50px);
   line-height: 1.05;
   letter-spacing: -0.02em;
   color: var(--ink);
@@ -199,7 +288,7 @@
 }
 
 .heroSub {
-  max-width: 62ch;
+  max-width: 58ch;
   margin: 14px 0 0;
   font-size: 15.5px;
   line-height: 1.65;
@@ -214,7 +303,7 @@
   padding: 9px 16px;
   border-radius: 999px;
   border: 1px solid var(--line-strong);
-  background: var(--surface);
+  background: rgba(255, 255, 255, 0.07);
   color: var(--ink);
   font-family: var(--font-display);
   font-size: 12.5px;
@@ -222,11 +311,13 @@
   text-decoration: none;
   transition:
     border-color 0.15s ease,
+    background-color 0.15s ease,
     transform 0.15s ease;
 }
 
 .storeLink:hover {
   border-color: var(--accent);
+  background: rgba(255, 255, 255, 0.12);
   transform: translateY(-1px);
 }
 
@@ -273,12 +364,6 @@
   color: var(--ink);
 }
 
-.kpiNum small {
-  font-size: 14px;
-  color: var(--accent);
-  font-weight: 600;
-}
-
 .kpiLabel {
   font-size: 11.5px;
   color: var(--muted);
@@ -290,6 +375,7 @@
 
 .section {
   border-bottom: 1px solid var(--line);
+  scroll-margin-top: 72px;
 }
 
 .sectionAlt {
@@ -455,14 +541,14 @@
   bottom: 3px;
   left: 3px;
   border-radius: 6px;
-  background: linear-gradient(90deg, var(--accent), color-mix(in srgb, var(--accent) 55%, #ffffff));
+  background: linear-gradient(90deg, var(--accent), color-mix(in srgb, var(--accent) 58%, #ffffff));
   display: flex;
   align-items: center;
   padding: 0 10px;
   font-family: var(--font-display);
   font-size: 11.5px;
   font-weight: 700;
-  color: #ffffff;
+  color: var(--accent-on);
   white-space: nowrap;
 }
 
@@ -580,7 +666,7 @@
   align-items: center;
   justify-content: center;
   background: var(--accent);
-  color: #ffffff;
+  color: var(--accent-on);
   font-family: var(--font-display);
   font-weight: 700;
   font-size: 14px;
@@ -616,31 +702,145 @@
   font-weight: 600;
 }
 
-/* ---- Galerie de captures ---- */
+/* ---- Visuels : cadre commun a toutes les captures ---- */
 
-.shots {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(min(100%, 190px), 1fr));
-  gap: 14px;
-  margin: 20px 0 0;
-}
-
-.shot {
+.frame {
   margin: 0;
-  border: 1px solid var(--line);
-  border-radius: var(--radius);
+  border: 1px solid var(--line-strong);
+  border-radius: 20px;
   overflow: hidden;
   background: var(--surface);
+  box-shadow: var(--shadow);
 }
 
-.shotImg {
+.frameImg {
   display: block;
   width: 100%;
   height: auto;
 }
 
+.frameCap {
+  padding: 12px 15px 14px;
+  border-top: 1px solid var(--line);
+  background: var(--surface-2);
+  font-size: 12.2px;
+  line-height: 1.5;
+  color: var(--slate);
+  margin: 0;
+}
+
+.frameKicker {
+  display: block;
+  font-family: var(--font-display);
+  font-size: 9.5px;
+  font-weight: 700;
+  letter-spacing: 1.4px;
+  text-transform: uppercase;
+  color: var(--accent-ink);
+  margin-bottom: 4px;
+}
+
+/* Texte + capture cote a cote. .splitFlip place la capture a gauche. */
+.split {
+  display: grid;
+  gap: clamp(20px, 3vw, 38px);
+  align-items: center;
+  margin: 22px 0;
+}
+
+.splitBody > :first-child {
+  margin-top: 0;
+}
+
+@media (min-width: 820px) {
+  .split {
+    grid-template-columns: minmax(0, 1.35fr) minmax(0, 264px);
+  }
+
+  .splitFlip {
+    grid-template-columns: minmax(0, 264px) minmax(0, 1.35fr);
+  }
+
+  .splitFlip .splitMedia {
+    order: -1;
+  }
+}
+
+.splitMedia {
+  justify-self: center;
+  width: 100%;
+  max-width: 264px;
+}
+
+.splitMediaWide {
+  max-width: 100%;
+}
+
+/* ---- Galerie de captures ---- */
+
+.shots {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 230px), 1fr));
+  gap: 16px;
+  margin: 20px 0 0;
+  align-items: start;
+}
+
 .shotWide {
   grid-column: 1 / -1;
+}
+
+/* ---- Reperes inter-applications ---- */
+
+.bench {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 260px), 1fr));
+  gap: 14px;
+  margin: 18px 0;
+}
+
+.benchCard {
+  display: flex;
+  gap: 14px;
+  align-items: flex-start;
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  background: var(--surface);
+  padding: 16px 18px;
+}
+
+.benchCardActive {
+  border-color: color-mix(in srgb, var(--accent) 45%, transparent);
+  background: linear-gradient(180deg, var(--accent-soft), var(--surface) 62%);
+}
+
+.benchIcon {
+  width: 46px;
+  height: 46px;
+  border-radius: 13px;
+  border: 1px solid var(--line-strong);
+  display: block;
+  flex-shrink: 0;
+}
+
+.benchName {
+  font-family: var(--font-display);
+  font-weight: 700;
+  font-size: 14px;
+  color: var(--ink);
+  margin: 0 0 3px;
+}
+
+.benchMeta {
+  margin: 0;
+  font-size: 12.5px;
+  line-height: 1.5;
+  color: var(--muted);
+}
+
+.benchMeta b {
+  color: var(--slate);
+  font-weight: 600;
 }
 
 /* ---- Etat vide (Gardien de la Paix) ---- */
@@ -661,7 +861,7 @@
   font-weight: 700;
   letter-spacing: 1.6px;
   text-transform: uppercase;
-  color: var(--muted);
+  color: var(--slate);
   border: 1px solid var(--line-strong);
   border-radius: 999px;
   padding: 6px 14px;
@@ -686,36 +886,120 @@
 /* ---- Pied de page ---- */
 
 .footer {
-  background: var(--bg-alt);
+  background: var(--footer);
+  border-top: 1px solid var(--line-strong);
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.07);
 }
 
 .footerInner {
   max-width: 1080px;
   margin: 0 auto;
-  padding: clamp(34px, 5vw, 52px) clamp(18px, 4vw, 40px);
-  display: flex;
-  flex-wrap: wrap;
-  gap: 16px 28px;
-  align-items: center;
-  justify-content: space-between;
-  font-size: 12.5px;
-  color: var(--muted);
+  padding: clamp(32px, 4.5vw, 48px) clamp(18px, 4vw, 40px);
+  display: grid;
+  gap: 26px 34px;
+}
+
+@media (min-width: 760px) {
+  .footerInner {
+    grid-template-columns: minmax(0, 1fr) auto;
+    align-items: start;
+  }
 }
 
 .footerBrand {
-  display: inline-flex;
+  display: flex;
   align-items: center;
-  gap: 10px;
+  gap: 12px;
 }
 
 .footerLogo {
-  height: 20px;
+  height: 22px;
   width: auto;
+  display: block;
+  background: #fff;
+  border-radius: 8px;
+  padding: 6px 10px;
+  box-sizing: content-box;
+}
+
+.footerTag {
+  font-family: var(--font-display);
+  font-size: 10px;
+  font-weight: 600;
+  letter-spacing: 1.6px;
+  text-transform: uppercase;
+  color: var(--slate);
+  padding-left: 12px;
+  border-left: 1px solid var(--line-strong);
+}
+
+.footerNote {
+  margin: 12px 0 0;
+  font-size: 12.8px;
+  line-height: 1.6;
+  color: var(--muted);
+  max-width: 46ch;
+}
+
+.footerCol {
+  display: flex;
+  flex-direction: column;
+  gap: 9px;
+}
+
+.footerHead {
+  font-family: var(--font-display);
+  font-size: 9.5px;
+  font-weight: 700;
+  letter-spacing: 1.6px;
+  text-transform: uppercase;
+  color: var(--muted);
+  margin-bottom: 1px;
+}
+
+.footerLink {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  font-size: 13px;
+  font-weight: 500;
+  color: var(--slate);
+  text-decoration: none;
+  transition: color 0.15s ease;
+}
+
+.footerLink:hover {
+  color: var(--ink);
+}
+
+.footerIcon {
+  width: 24px;
+  height: 24px;
+  border-radius: 7px;
+  border: 1px solid var(--line);
+  display: block;
+}
+
+.footerBar {
+  border-top: 1px solid var(--line);
+}
+
+.footerBarInner {
+  max-width: 1080px;
+  margin: 0 auto;
+  padding: 15px clamp(18px, 4vw, 40px);
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px 22px;
+  justify-content: space-between;
+  font-size: 12.2px;
+  color: var(--muted);
 }
 
 @media (prefers-reduced-motion: reduce) {
   .navLink,
-  .storeLink {
+  .storeLink,
+  .footerLink {
     transition: none;
   }
 }
@@ -726,7 +1010,9 @@
   }
 
   .section,
-  .hero {
+  .hero,
+  .frame,
+  .split {
     break-inside: avoid;
   }
 }

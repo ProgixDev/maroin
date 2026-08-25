@@ -7,6 +7,14 @@ import styles from "./report.module.css";
 
 type AppKey = keyof typeof apps;
 
+/** Une capture App Store : image, intitulé court, légende. */
+export type Media = {
+  src: string;
+  alt: string;
+  kicker: string;
+  caption: string;
+};
+
 /* ------------------------------------------------------------------ */
 /* Chrome commun : header, hero, pied de page                          */
 /* ------------------------------------------------------------------ */
@@ -15,6 +23,7 @@ export function ReportShell({ app, children }: { app: AppKey; children: ReactNod
   return (
     <div className={styles.root} data-app={app}>
       <header className={styles.header}>
+        <div className={styles.headerAccent} aria-hidden="true" />
         <div className={styles.headerInner}>
           <Link href={apps.caserne.href} className={styles.brand} aria-label="Progix">
             <img className={styles.brandLogo} src="/progix-logo.png" alt="Progix" />
@@ -28,7 +37,9 @@ export function ReportShell({ app, children }: { app: AppKey; children: ReactNod
                 aria-current={a.key === app ? "page" : undefined}
                 className={cn(styles.navLink, a.key === app && styles.navLinkActive)}
               >
-                {a.nav}
+                <img className={styles.navIcon} src={a.icon} alt="" />
+                <span className={styles.navFull}>{a.nav}</span>
+                <span className={styles.navShort}>{a.navShort}</span>
               </Link>
             ))}
           </nav>
@@ -37,11 +48,31 @@ export function ReportShell({ app, children }: { app: AppKey; children: ReactNod
       <main>{children}</main>
       <footer className={styles.footer}>
         <div className={styles.footerInner}>
-          <span className={styles.footerBrand}>
-            <img className={styles.footerLogo} src="/progix-logo.png" alt="Progix" />
+          <div>
+            <span className={styles.footerBrand}>
+              <img className={styles.footerLogo} src="/progix-logo.png" alt="Progix" />
+              <span className={styles.footerTag}>Rapports Ads</span>
+            </span>
+            <p className={styles.footerNote}>
+              Document confidentiel préparé pour le suivi des campagnes Meta Ads. Les visuels
+              proviennent des fiches App Store des applications.
+            </p>
+          </div>
+          <div className={styles.footerCol}>
+            <span className={styles.footerHead}>Les rapports</span>
+            {navLinks.map((a) => (
+              <Link key={a.key} href={a.href} className={styles.footerLink}>
+                <img className={styles.footerIcon} src={a.icon} alt="" />
+                {a.nav}
+              </Link>
+            ))}
+          </div>
+        </div>
+        <div className={styles.footerBar}>
+          <div className={styles.footerBarInner}>
             <span>© 2026 Progix Inc. · Fièrement montréalaise</span>
-          </span>
-          <span>contact@progix.pro · progix.pro</span>
+            <span>contact@progix.pro · progix.pro</span>
+          </div>
         </div>
       </footer>
     </div>
@@ -53,34 +84,51 @@ export function Hero({
   title,
   titleAccent,
   sub,
+  art,
   children,
 }: {
   app: AppKey;
   title: string;
   titleAccent: string;
   sub: string;
+  /** Capture mise en avant, à droite du titre. */
+  art: Media;
   children?: ReactNode;
 }) {
   const a = apps[app];
   return (
     <section className={styles.hero}>
       <div className={styles.heroInner}>
-        <div className={styles.heroTop}>
-          <img className={styles.heroIcon} src={a.icon} alt={"Icône de l’application " + a.name} />
+        <div className={styles.heroGrid}>
           <div>
-            <div className={styles.eyebrow}>
-              <span className={styles.eyebrowBar} aria-hidden="true" />
-              {reportMeta.ref} · {a.segment}
+            <div className={styles.heroTop}>
+              <img
+                className={styles.heroIcon}
+                src={a.icon}
+                alt={"Icône de l’application " + a.name}
+              />
+              <div>
+                <div className={styles.eyebrow}>
+                  <span className={styles.eyebrowBar} aria-hidden="true" />
+                  {reportMeta.ref} · {a.segment}
+                </div>
+                <h1 className={styles.heroTitle}>
+                  {title} <span className={styles.heroTitleAccent}>{titleAccent}</span>
+                </h1>
+              </div>
             </div>
-            <h1 className={styles.heroTitle}>
-              {title} <span className={styles.heroTitleAccent}>{titleAccent}</span>
-            </h1>
+            <p className={styles.heroSub}>{sub}</p>
+            <a
+              className={styles.storeLink}
+              href={a.store}
+              target="_blank"
+              rel="noreferrer noopener"
+            >
+              Voir {a.name} sur l’App Store <span aria-hidden="true">↗</span>
+            </a>
           </div>
+          <Figure media={art} className={styles.heroArt} />
         </div>
-        <p className={styles.heroSub}>{sub}</p>
-        <a className={styles.storeLink} href={a.store} target="_blank" rel="noreferrer noopener">
-          Voir {a.name} sur l’App Store <span aria-hidden="true">↗</span>
-        </a>
         <div className={styles.metaRow}>
           <span>
             Application · <b>{a.name}</b>
@@ -98,6 +146,88 @@ export function Hero({
         {children}
       </div>
     </section>
+  );
+}
+
+/* ------------------------------------------------------------------ */
+/* Visuels                                                              */
+/* ------------------------------------------------------------------ */
+
+/** Capture encadrée et légendée. Les visuels App Store portent déjà leur
+ *  propre mockup de téléphone : on ne rajoute donc pas de cadre d’appareil. */
+export function Figure({
+  media,
+  className,
+  priority,
+}: {
+  media: Media;
+  className?: string;
+  priority?: boolean;
+}) {
+  return (
+    <figure className={cn(styles.frame, className)}>
+      <img
+        className={styles.frameImg}
+        src={media.src}
+        alt={media.alt}
+        loading={priority ? "eager" : "lazy"}
+        decoding="async"
+      />
+      <figcaption className={styles.frameCap}>
+        <span className={styles.frameKicker}>{media.kicker}</span>
+        {media.caption}
+      </figcaption>
+    </figure>
+  );
+}
+
+/** Texte et capture côte à côte. `flip` place la capture à gauche. */
+export function Split({
+  media,
+  flip,
+  children,
+}: {
+  media: Media;
+  flip?: boolean;
+  children: ReactNode;
+}) {
+  return (
+    <div className={cn(styles.split, flip && styles.splitFlip)}>
+      <div className={styles.splitBody}>{children}</div>
+      <Figure media={media} className={styles.splitMedia} />
+    </div>
+  );
+}
+
+/** Galerie de captures. `wide` fait courir une image sur toute la largeur. */
+export function Shots({ items }: { items: ReadonlyArray<Media & { wide?: boolean }> }) {
+  return (
+    <div className={styles.shots}>
+      {items.map((s) => (
+        <Figure key={s.src} media={s} className={cn(s.wide && styles.shotWide)} />
+      ))}
+    </div>
+  );
+}
+
+/** Deux applications côte à côte : sert de repère de comparaison. */
+export function Bench({
+  items,
+}: {
+  items: ReadonlyArray<{ app: AppKey; title: string; meta: ReactNode; active?: boolean }>;
+}) {
+  return (
+    <div className={styles.bench}>
+      {items.map((b) => (
+        <div key={b.app} className={cn(styles.benchCard, b.active && styles.benchCardActive)}>
+          <img className={styles.benchIcon} src={apps[b.app].icon} alt="" />
+          <div>
+            <h4 className={styles.benchName}>{b.title}</h4>
+            <p className={styles.benchMeta}>{b.meta}</p>
+          </div>
+        </div>
+      ))}
+    </div>
   );
 }
 
@@ -254,22 +384,6 @@ export function Funnel({
         </div>
       ))}
       <p className={styles.funnelNote}>{note}</p>
-    </div>
-  );
-}
-
-export function Shots({
-  items,
-}: {
-  items: ReadonlyArray<{ src: string; alt: string; wide?: boolean }>;
-}) {
-  return (
-    <div className={styles.shots}>
-      {items.map((s) => (
-        <figure key={s.src} className={cn(styles.shot, s.wide && styles.shotWide)}>
-          <img className={styles.shotImg} src={s.src} alt={s.alt} loading="lazy" decoding="async" />
-        </figure>
-      ))}
     </div>
   );
 }

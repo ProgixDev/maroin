@@ -8,6 +8,14 @@ import styles from "./site-gate.module.css";
 
 const STORAGE_KEY = "progix.gate.unlocked";
 
+/** Les deux rapports gardés par cette porte. Les chemins pointent vers
+ *  /public : le gate n’importe rien de la feature report, les features ne
+ *  s’importent jamais entre elles. */
+const gatedApps = [
+  { name: "Caserne", icon: "/apps/caserne/icon.png", variant: "appCaserne" },
+  { name: "Gardien de la Paix", icon: "/apps/gdlp/icon.png", variant: "appGdlp" },
+] as const;
+
 /** Shared geometry for the two reveal-toggle glyphs. */
 const iconProps = {
   width: 19,
@@ -106,8 +114,17 @@ export function SiteGate({ children }: { children: React.ReactNode }) {
           Accès protégé
         </h1>
         <p className={styles.subtitle}>
-          Saisissez le mot de passe qui vous a été communiqué pour consulter le document.
+          Saisissez le mot de passe qui vous a été communiqué pour consulter les rapports.
         </p>
+        <p className={styles.appsLabel}>Deux rapports Meta Ads</p>
+        <ul className={styles.apps}>
+          {gatedApps.map((app) => (
+            <li key={app.name} className={cn(styles.app, styles[app.variant])}>
+              <Image src={app.icon} alt="" width={52} height={52} aria-hidden />
+              {app.name}
+            </li>
+          ))}
+        </ul>
         <form className={styles.form} onSubmit={handleSubmit} noValidate>
           <div>
             <label className={styles.label} htmlFor="gate-password">

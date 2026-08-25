@@ -1,3 +1,10 @@
+/* ------------------------------------------------------------------ */
+/* Porte d’entree des deux rapports. Elle emprunte aux deux identites : */
+/* lueur rouge feu de Caserne en bas a gauche, lueur or de Gardien de   */
+/* la Paix en haut a droite, et un fond qui glisse du noir chaud au     */
+/* bleu marine entre les deux.                                          */
+/* ------------------------------------------------------------------ */
+
 .overlay {
   position: fixed;
   inset: 0;
@@ -7,24 +14,38 @@
   justify-content: center;
   padding: 24px;
   font-family: var(--font-body), system-ui, sans-serif;
-  color: #eaf1f9;
+  color: #edeef4;
   background:
-    radial-gradient(rgba(56, 182, 255, 0.1) 1px, transparent 1px) 0 0 / 26px 26px,
-    linear-gradient(155deg, #06152b 0%, #0c2340 32%, #15294f 58%, #0e2c52 100%);
-  background-color: #0c2340;
+    radial-gradient(circle at 6% 94%, rgba(226, 35, 26, 0.32), transparent 46%),
+    radial-gradient(circle at 94% 6%, rgba(201, 162, 39, 0.28), transparent 48%),
+    radial-gradient(rgba(255, 255, 255, 0.05) 1px, transparent 1px) 0 0 / 26px 26px,
+    linear-gradient(148deg, #130809 0%, #0a0a0d 40%, #0a0f22 72%, #0d1533 100%);
+  background-color: #0a0a0d;
 }
 
 .card {
   position: relative;
   width: 100%;
-  max-width: 420px;
-  background: rgba(255, 255, 255, 0.05);
-  border: 1px solid rgba(255, 255, 255, 0.13);
-  border-radius: 18px;
-  padding: clamp(28px, 5vw, 40px);
-  box-shadow: 0 24px 70px rgba(0, 0, 0, 0.45);
-  backdrop-filter: blur(6px);
-  -webkit-backdrop-filter: blur(6px);
+  max-width: 430px;
+  background: rgba(255, 255, 255, 0.055);
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  border-radius: 20px;
+  padding: clamp(26px, 5vw, 38px);
+  box-shadow: 0 24px 70px rgba(0, 0, 0, 0.55);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  overflow: hidden;
+}
+
+/* Filet superieur : le rouge de Caserne fond vers l’or de Gardien de la Paix. */
+.card::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 2px;
+  background: linear-gradient(90deg, #e2231a, #d1651f 52%, #c9a227);
 }
 
 .chip {
@@ -32,7 +53,7 @@
   background: #fff;
   border-radius: 12px;
   padding: 11px 16px;
-  box-shadow: 0 14px 40px rgba(0, 0, 0, 0.34);
+  box-shadow: 0 14px 40px rgba(0, 0, 0, 0.4);
 }
 
 .chip :global(img) {
@@ -47,19 +68,18 @@
   align-items: center;
   gap: 9px;
   font-family: var(--font-display), var(--font-body), sans-serif;
-  font-weight: 600;
-  font-size: 11px;
+  font-weight: 700;
+  font-size: 10.5px;
   letter-spacing: 2.2px;
   text-transform: uppercase;
-  color: #38b6ff;
+  color: #e8c86e;
 }
 
 .eyebrowBar {
   width: 22px;
   height: 2px;
   border-radius: 2px;
-  background: #38b6ff;
-  box-shadow: 0 0 10px rgba(56, 182, 255, 0.8);
+  background: linear-gradient(90deg, #e2231a, #c9a227);
 }
 
 .title {
@@ -73,10 +93,64 @@
 }
 
 .subtitle {
-  color: #bcd2e6;
+  color: #c3c7d6;
   font-size: 14px;
   line-height: 1.6;
-  margin: 0 0 22px;
+  margin: 0;
+}
+
+/* ---- Les deux rapports derriere la porte ---- */
+
+.appsLabel {
+  font-family: var(--font-display), var(--font-body), sans-serif;
+  font-size: 9.5px;
+  font-weight: 700;
+  letter-spacing: 1.8px;
+  text-transform: uppercase;
+  color: #8d93a8;
+  margin: 22px 0 10px;
+}
+
+.apps {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 9px;
+  margin: 0 0 24px;
+  padding: 0;
+  list-style: none;
+}
+
+.app {
+  display: inline-flex;
+  align-items: center;
+  gap: 9px;
+  padding: 6px 13px 6px 6px;
+  border-radius: 13px;
+  border: 1px solid rgba(255, 255, 255, 0.16);
+  background: rgba(255, 255, 255, 0.05);
+  font-family: var(--font-display), var(--font-body), sans-serif;
+  font-size: 12.5px;
+  font-weight: 600;
+  color: #edeef4;
+}
+
+/* Chaque pastille reprend l’accent de son application. */
+.appCaserne {
+  border-color: rgba(226, 35, 26, 0.55);
+  background: rgba(226, 35, 26, 0.13);
+}
+
+.appGdlp {
+  border-color: rgba(201, 162, 39, 0.55);
+  background: rgba(201, 162, 39, 0.13);
+}
+
+.app :global(img) {
+  display: block;
+  width: 26px;
+  height: 26px;
+  border-radius: 8px;
+  border: 1px solid rgba(255, 255, 255, 0.14);
 }
 
 .form {
@@ -91,7 +165,7 @@
   font-size: 10px;
   letter-spacing: 1px;
   text-transform: uppercase;
-  color: #7fa6c8;
+  color: #8d93a8;
   margin-bottom: 7px;
 }
 
@@ -104,8 +178,8 @@
   font-family: var(--font-body), sans-serif;
   font-size: 15px;
   color: #fff;
-  background: rgba(255, 255, 255, 0.06);
-  border: 1.5px solid rgba(255, 255, 255, 0.16);
+  background: rgba(255, 255, 255, 0.07);
+  border: 1.5px solid rgba(255, 255, 255, 0.18);
   border-radius: 11px;
   padding: 13px 15px;
   outline: none;
@@ -115,12 +189,12 @@
 }
 
 .input::placeholder {
-  color: #7fa6c8;
+  color: #8d93a8;
 }
 
 .input:focus {
-  border-color: #38b6ff;
-  box-shadow: 0 0 0 3px rgba(56, 182, 255, 0.18);
+  border-color: #c9a227;
+  box-shadow: 0 0 0 3px rgba(201, 162, 39, 0.22);
 }
 
 .inputError {
@@ -143,7 +217,7 @@
   width: 34px;
   height: 34px;
   padding: 0;
-  color: #7fa6c8;
+  color: #9298ad;
   background: transparent;
   border: none;
   border-radius: 9px;
@@ -154,14 +228,14 @@
 }
 
 .toggle:hover {
-  color: #eaf1f9;
-  background: rgba(255, 255, 255, 0.09);
+  color: #fff;
+  background: rgba(255, 255, 255, 0.1);
 }
 
 .toggle:focus-visible {
   outline: none;
-  color: #eaf1f9;
-  box-shadow: 0 0 0 2px rgba(56, 182, 255, 0.6);
+  color: #fff;
+  box-shadow: 0 0 0 2px rgba(201, 162, 39, 0.7);
 }
 
 .toggle svg {
@@ -175,15 +249,15 @@
   gap: 9px;
   margin-top: 4px;
   font-family: var(--font-display), var(--font-body), sans-serif;
-  font-weight: 600;
+  font-weight: 700;
   font-size: 14.5px;
   color: #fff;
-  background: linear-gradient(135deg, #1e97e0, #38b6ff);
+  background: linear-gradient(100deg, #e2231a 0%, #d1651f 54%, #c9a227 100%);
   border: none;
   border-radius: 11px;
   padding: 14px 18px;
   cursor: pointer;
-  box-shadow: 0 10px 30px rgba(56, 182, 255, 0.3);
+  box-shadow: 0 12px 32px rgba(210, 90, 30, 0.32);
   transition:
     transform 0.15s ease,
     box-shadow 0.2s ease;
@@ -191,6 +265,7 @@
 
 .button:hover {
   transform: translateY(-2px);
+  box-shadow: 0 16px 38px rgba(210, 90, 30, 0.42);
 }
 
 .button:active {
@@ -207,9 +282,9 @@
 .foot {
   margin-top: 22px;
   padding-top: 18px;
-  border-top: 1px solid rgba(255, 255, 255, 0.12);
+  border-top: 1px solid rgba(255, 255, 255, 0.13);
   font-size: 11.5px;
-  color: #9fb6ce;
+  color: #9298ad;
   text-align: center;
 }
 

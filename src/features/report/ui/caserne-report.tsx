@@ -11,6 +11,7 @@ import {
   ReportShell,
   Section,
   Shots,
+  Split,
   Table,
 } from "./shell";
 import {
@@ -18,10 +19,11 @@ import {
   caserneDerived,
   caserneFunnel,
   caserneFunnelChain,
+  caserneGallery,
   caserneKpis,
+  caserneMedia,
   caserneQuestions,
   caserneRaw,
-  caserneShots,
   caserneTracking,
   caserneValide,
   fmt,
@@ -39,6 +41,7 @@ export function CaserneReport() {
         title="Le marché Pompier"
         titleAccent="répond."
         sub="Première campagne Meta Ads sur l’audience Pompier. Avec 22 € de dépense publicitaire, les premiers chiffres valident le marché, les créatives et l’onboarding. Le chantier restant se situe après le démarrage de l’essai gratuit."
+        art={caserneMedia.promesse}
       >
         <KpiGrid items={caserneKpis} />
       </Hero>
@@ -93,10 +96,21 @@ export function CaserneReport() {
 
       {/* 03 — CE QUI EST VALIDÉ */}
       <Section id="valide" num="03 · Acquis" title="Ce que la campagne valide">
-        <P>
-          Trois éléments sont confirmés par ces premiers chiffres. Ce sont les trois qui coûtent
-          habituellement le plus cher à corriger.
-        </P>
+        <Split media={caserneMedia.onboarding}>
+          <P>
+            Trois éléments sont confirmés par ces premiers chiffres. Ce sont les trois qui coûtent
+            habituellement le plus cher à corriger.
+          </P>
+          <P>
+            Le plus visible tient en une capture : l’écran ci-contre est celui que l’utilisateur
+            découvre juste après l’installation, et <b>{fmt.pct(d.tauxEssai)}</b> de ceux qui le
+            voient vont jusqu’au démarrage de l’essai gratuit.
+          </P>
+          <P>
+            Autrement dit, ni le ciblage, ni le message, ni la première minute d’usage ne sont à
+            refaire. Ce sont les trois postes les plus longs à corriger, et ils tiennent déjà.
+          </P>
+        </Split>
         <CardGrid>
           {caserneValide.map((c) => (
             <Card key={c.title} kicker={c.kicker} title={c.title} variant="ok">
@@ -113,17 +127,23 @@ export function CaserneReport() {
 
       {/* 04 — POINT D’ATTENTION */}
       <Section id="attention" num="04 · Attention" title="Le principal point d’attention" alt>
-        <P>
-          Sur les <b>{fmt.num(r.essais)} utilisateurs</b> ayant commencé l’essai gratuit,{" "}
-          <b>{fmt.num(r.desistements)} se sont désistés</b>. Cela représente{" "}
-          <b>{fmt.pct(d.tauxDesistement)} des essais</b>, soit presque un utilisateur sur deux.
-        </P>
-        <Callout icon="!" variant="warn" title="Presque un essai sur deux annulé">
-          C’est actuellement le principal point à comprendre, et le principal levier d’optimisation.
-          Tant que ce taux reste à ce niveau, augmenter le budget publicitaire revient à remplir un
-          seau percé.
-        </Callout>
-        <P>Les questions auxquelles nous devons répondre maintenant :</P>
+        <Split media={caserneMedia.valeur} flip>
+          <P>
+            Sur les <b>{fmt.num(r.essais)} utilisateurs</b> ayant commencé l’essai gratuit,{" "}
+            <b>{fmt.num(r.desistements)} se sont désistés</b>. Cela représente{" "}
+            <b>{fmt.pct(d.tauxDesistement)} des essais</b>, soit presque un utilisateur sur deux.
+          </P>
+          <Callout icon="!" variant="warn" title="Presque un essai sur deux annulé">
+            C’est actuellement le principal point à comprendre, et le principal levier
+            d’optimisation. Tant que ce taux reste à ce niveau, augmenter le budget publicitaire
+            revient à remplir un seau percé.
+          </Callout>
+          <P>
+            L’écran ci-contre est celui qui doit convaincre pendant l’essai, et la fiche App Store
+            annonce <b>3 jours</b> : la fenêtre est courte. C’est là que se joue la réponse aux
+            questions suivantes.
+          </P>
+        </Split>
         <List>
           {caserneQuestions.map((q) => (
             <Item key={q}>{q}</Item>
@@ -200,11 +220,10 @@ export function CaserneReport() {
       {/* 08 — L’APPLICATION */}
       <Section id="app" num="08 · Produit" title="L’application derrière la campagne" alt>
         <P>
-          Ce que voient les utilisateurs après avoir cliqué sur la publicité. La cohérence entre la
-          promesse publicitaire et ces écrans fait partie des pistes à examiner sur les
-          désistements.
+          Ce que voient les utilisateurs une fois passé l’onboarding. La cohérence entre la promesse
+          publicitaire et ces écrans fait partie des pistes à examiner sur les désistements.
         </P>
-        <Shots items={caserneShots} />
+        <Shots items={caserneGallery} />
       </Section>
     </ReportShell>
   );

@@ -417,4 +417,40 @@ export function Table({
   );
 }
 
+/** Tableau à colonnes multiples, pour les grilles jour par jour. */
+export function TableMulti({
+  head,
+  rows,
+}: {
+  head: readonly string[];
+  rows: ReadonlyArray<readonly string[]>;
+}) {
+  return (
+    <div className={styles.tableWrap}>
+      <table className={styles.table}>
+        <thead>
+          <tr>
+            {head.map((h, i) => (
+              <th key={h} style={i > 0 ? { textAlign: "right" } : undefined}>
+                {h}
+              </th>
+            ))}
+          </tr>
+        </thead>
+        <tbody>
+          {rows.map((row, ri) => (
+            <tr key={ri}>
+              {row.map((cell, ci) => (
+                <td key={ci} className={ci > 0 ? styles.tableNum : undefined}>
+                  {cell}
+                </td>
+              ))}
+            </tr>
+          ))}
+        </tbody>
+      </table>
+    </div>
+  );
+}
+
 export { styles as reportStyles };

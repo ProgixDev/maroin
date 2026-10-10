@@ -350,6 +350,10 @@
   margin: 26px 0 0;
 }
 
+.heroInner > .kpiGrid:first-child {
+  margin-top: 0;
+}
+
 .kpi {
   background: var(--surface);
   padding: 20px 16px;

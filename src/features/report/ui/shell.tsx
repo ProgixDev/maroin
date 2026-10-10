@@ -88,61 +88,65 @@ export function Hero({
   children,
 }: {
   app: AppKey;
-  title: string;
-  titleAccent: string;
-  sub: string;
+  title?: string;
+  titleAccent?: string;
+  sub?: string;
   /** Capture mise en avant, à droite du titre. */
-  art: Media;
+  art?: Media;
   children?: ReactNode;
 }) {
   const a = apps[app];
   return (
     <section className={styles.hero}>
       <div className={styles.heroInner}>
-        <div className={styles.heroGrid}>
-          <div>
-            <div className={styles.heroTop}>
-              <img
-                className={styles.heroIcon}
-                src={a.icon}
-                alt={"Icône de l’application " + a.name}
-              />
+        {title && art ? (
+          <>
+            <div className={styles.heroGrid}>
               <div>
-                <div className={styles.eyebrow}>
-                  <span className={styles.eyebrowBar} aria-hidden="true" />
-                  {reportMeta.ref} · {a.segment}
+                <div className={styles.heroTop}>
+                  <img
+                    className={styles.heroIcon}
+                    src={a.icon}
+                    alt={"Icône de l’application " + a.name}
+                  />
+                  <div>
+                    <div className={styles.eyebrow}>
+                      <span className={styles.eyebrowBar} aria-hidden="true" />
+                      {reportMeta.ref} · {a.segment}
+                    </div>
+                    <h1 className={styles.heroTitle}>
+                      {title} <span className={styles.heroTitleAccent}>{titleAccent}</span>
+                    </h1>
+                  </div>
                 </div>
-                <h1 className={styles.heroTitle}>
-                  {title} <span className={styles.heroTitleAccent}>{titleAccent}</span>
-                </h1>
+                {sub ? <p className={styles.heroSub}>{sub}</p> : null}
+                <a
+                  className={styles.storeLink}
+                  href={a.store}
+                  target="_blank"
+                  rel="noreferrer noopener"
+                >
+                  Voir {a.name} sur l’App Store <span aria-hidden="true">↗</span>
+                </a>
               </div>
+              <Figure media={art} className={styles.heroArt} />
             </div>
-            <p className={styles.heroSub}>{sub}</p>
-            <a
-              className={styles.storeLink}
-              href={a.store}
-              target="_blank"
-              rel="noreferrer noopener"
-            >
-              Voir {a.name} sur l’App Store <span aria-hidden="true">↗</span>
-            </a>
-          </div>
-          <Figure media={art} className={styles.heroArt} />
-        </div>
-        <div className={styles.metaRow}>
-          <span>
-            Application · <b>{a.name}</b>
-          </span>
-          <span>
-            Canal · <b>{reportMeta.canal}</b>
-          </span>
-          <span>
-            Période · <b>{reportMeta.periode}</b>
-          </span>
-          <span>
-            Préparé par · <b>Progix Inc.</b>
-          </span>
-        </div>
+            <div className={styles.metaRow}>
+              <span>
+                Application · <b>{a.name}</b>
+              </span>
+              <span>
+                Canal · <b>{reportMeta.canal}</b>
+              </span>
+              <span>
+                Période · <b>{reportMeta.periode}</b>
+              </span>
+              <span>
+                Préparé par · <b>Progix Inc.</b>
+              </span>
+            </div>
+          </>
+        ) : null}
         {children}
       </div>
     </section>
@@ -346,7 +350,7 @@ export function Item({ children }: { children: ReactNode }) {
 }
 
 /** Tunnel de conversion. Les barres sont en échelle logarithmique : en linéaire,
- *  24 téléchargements face à 3 400 impressions donneraient un trait invisible. */
+ *  32 téléchargements face à 5 200 impressions donneraient un trait invisible. */
 export function Funnel({
   steps,
   note,

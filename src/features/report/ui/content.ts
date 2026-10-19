@@ -6,39 +6,54 @@
  */
 
 /* ------------------------------------------------------------------ */
-/* Chiffres bruts de la campagne Caserne — Pompier, sur 2 jours          */
+/* Chiffres bruts de la campagne Caserne — Pompier, sur 5 jours          */
 /* ------------------------------------------------------------------ */
 
-/** Totaux client : 27 €, 5 200 impressions, 32 téléchargements, 14 essais
- *  (8 le Jour 1, 6 le Jour 2). Dépense, impressions et téléchargements sont
- *  répartis au prorata des essais, à CPM presque identique d’un jour à l’autre. */
 export const caserneJours = [
-  {
-    label: "Jour 1",
-    depense: 15,
-    impressions: 2889,
-    telechargements: 18,
-    essais: 8,
-  },
-  {
-    label: "Jour 2",
-    depense: 12,
-    impressions: 2311,
-    telechargements: 14,
-    essais: 6,
-  },
+  { label: "Jour 1", depense: 15, impressions: 2889, telechargements: 18, essais: 8 },
+  { label: "Jour 2", depense: 12, impressions: 2311, telechargements: 14, essais: 6 },
+  { label: "Jour 3", depense: 24.5, impressions: 4719, telechargements: 29, essais: 13 },
+  { label: "Jour 4", depense: 25.81, impressions: 4973, telechargements: 31, essais: 14 },
+  { label: "Jour 5", depense: 26, impressions: 5009, telechargements: 30, essais: 13 },
 ] as const;
 
 export const caserneRaw = {
-  depense: 27,
-  impressions: 5200,
-  telechargements: 32,
-  essais: 14,
+  depense: 103.31,
+  impressions: 19901,
+  telechargements: 122,
+  essais: 54,
+  abonnements: 4,
+  prixAbonnement: 4.99,
+  essaisCohorteJ1J2: 14,
 } as const;
 
 const r = caserneRaw;
-const j1 = caserneJours[0];
-const j2 = caserneJours[1];
+
+type Jour = (typeof caserneJours)[number];
+
+function statsJour(j: Jour) {
+  return {
+    tauxEssai: (j.essais / j.telechargements) * 100,
+    cpm: (j.depense / j.impressions) * 1000,
+    coutParTelechargement: j.depense / j.telechargements,
+    coutParEssai: j.depense / j.essais,
+  };
+}
+
+const joursStats = caserneJours.map(statsJour);
+
+function cumulJusqua(n: number) {
+  const slice = caserneJours.slice(0, n);
+  return {
+    jours: n,
+    heures: n * 24,
+    depense: slice.reduce((a, j) => a + j.depense, 0),
+    telechargements: slice.reduce((a, j) => a + j.telechargements, 0),
+    essais: slice.reduce((a, j) => a + j.essais, 0),
+  };
+}
+
+export const caserneCumuls = [2, 3, 4, 5].map(cumulJusqua);
 
 /** Ratios dérivés, arrondis à l’affichage seulement. */
 export const caserneDerived = {
@@ -47,14 +62,15 @@ export const caserneDerived = {
   coutParEssai: r.depense / r.essais,
   tauxEssai: (r.essais / r.telechargements) * 100,
   tauxInstall: (r.telechargements / r.impressions) * 100,
-  jour1TauxEssai: (j1.essais / j1.telechargements) * 100,
-  jour2TauxEssai: (j2.essais / j2.telechargements) * 100,
-  jour1Cpm: (j1.depense / j1.impressions) * 1000,
-  jour2Cpm: (j2.depense / j2.impressions) * 1000,
-  jour1CoutParTelechargement: j1.depense / j1.telechargements,
-  jour2CoutParTelechargement: j2.depense / j2.telechargements,
-  jour1CoutParEssai: j1.depense / j1.essais,
-  jour2CoutParEssai: j2.depense / j2.essais,
+  jours: joursStats,
+  jour1TauxEssai: joursStats[0].tauxEssai,
+  jour2TauxEssai: joursStats[1].tauxEssai,
+  jour1CoutParEssai: joursStats[0].coutParEssai,
+  revenuMensuel: r.abonnements * r.prixAbonnement,
+  coutParAbonne: r.depense / r.abonnements,
+  tauxConversionCohorte: (r.abonnements / r.essaisCohorteJ1J2) * 100,
+  essaisEnCours: r.essais - r.essaisCohorteJ1J2,
+  ecartPremierMois: r.abonnements * r.prixAbonnement - r.depense,
 } as const;
 
 const eur = (n: number, d = 2) =>
@@ -67,80 +83,87 @@ const dec = (n: number, d = 2) =>
 
 export const fmt = { eur, pct, num, dec };
 
+const eurAmt = (n: number) => (Number.isInteger(n) ? eur(n, 0) : eur(n, 2));
+
+function kpisJour(i: number, essaisLabel: string) {
+  const j = caserneJours[i];
+  const st = joursStats[i];
+  return [
+    { label: "Dépense", value: eurAmt(j.depense) },
+    { label: "Impressions", value: num(j.impressions) },
+    { label: "Téléchargements", value: num(j.telechargements) },
+    { label: essaisLabel, value: num(j.essais) },
+    { label: "Téléchargement → essai", value: pct(st.tauxEssai, 1) },
+    { label: "CPM", value: eur(st.cpm) },
+    { label: "Coût par téléchargement", value: eur(st.coutParTelechargement) },
+    { label: "Coût par essai", value: eur(st.coutParEssai) },
+  ];
+}
+
 /* ------------------------------------------------------------------ */
 /* Caserne : KPI de couverture                                          */
 /* ------------------------------------------------------------------ */
 
 export const caserneKpis = [
-  { n: eur(r.depense, 0), l: "budget dépensé sur 2 jours" },
+  { n: eurAmt(r.depense), l: "budget dépensé sur 5 jours" },
   { n: num(r.impressions), l: "impressions" },
   { n: num(r.telechargements), l: "téléchargements" },
   { n: num(r.essais), l: "essais gratuits démarrés" },
+  { n: num(r.abonnements), l: "abonnements payants" },
   { n: eur(caserneDerived.coutParEssai), l: "coût par essai gratuit" },
+  { n: eur(caserneDerived.coutParAbonne), l: "coût par abonnement payant" },
+  { n: eur(caserneDerived.revenuMensuel), l: "revenus mensuels générés" },
 ] as const;
 
-/** Coûts unitaires, calculés à partir des volumes cumulés sur 2 jours. */
+/** Coûts unitaires, calculés à partir des volumes cumulés sur 5 jours. */
 export const caserneCouts = [
   { label: "CPM (coût pour mille impressions)", value: eur(caserneDerived.cpm) },
   { label: "Coût par téléchargement", value: eur(caserneDerived.coutParTelechargement) },
   { label: "Coût par essai gratuit démarré", value: eur(caserneDerived.coutParEssai) },
   { label: "Taux téléchargement → essai", value: pct(caserneDerived.tauxEssai, 1) },
+  {
+    label: "Coût publicitaire par abonné payant acquis à ce stade",
+    value: eur(caserneDerived.coutParAbonne),
+  },
+  {
+    label: "Taux essai → abonnement, cohorte J1-J2",
+    value: pct(caserneDerived.tauxConversionCohorte, 1),
+  },
 ] as const;
 
 /** Grand tableau du bilan, jour par jour puis total. */
 export const caserneTableJours = {
-  head: ["Indicateur", "Jour 1", "Jour 2", "Total"],
+  head: ["Indicateur", "Jour 1", "Jour 2", "Jour 3", "Jour 4", "Jour 5", "Total"],
   rows: [
-    ["Dépense publicitaire", eur(j1.depense, 0), eur(j2.depense, 0), eur(r.depense, 0)],
-    ["Impressions", num(j1.impressions), num(j2.impressions), num(r.impressions)],
-    ["Téléchargements", num(j1.telechargements), num(j2.telechargements), num(r.telechargements)],
-    ["Essais gratuits démarrés", num(j1.essais), num(j2.essais), num(r.essais)],
+    ["Dépense publicitaire", ...caserneJours.map((j) => eurAmt(j.depense)), eurAmt(r.depense)],
+    ["Impressions", ...caserneJours.map((j) => num(j.impressions)), num(r.impressions)],
+    ["Téléchargements", ...caserneJours.map((j) => num(j.telechargements)), num(r.telechargements)],
+    ["Essais gratuits démarrés", ...caserneJours.map((j) => num(j.essais)), num(r.essais)],
     [
       "Téléchargement → essai",
-      pct(caserneDerived.jour1TauxEssai, 1),
-      pct(caserneDerived.jour2TauxEssai, 1),
+      ...joursStats.map((st) => pct(st.tauxEssai, 1)),
       pct(caserneDerived.tauxEssai, 1),
     ],
     [
       "Coût par téléchargement",
-      eur(caserneDerived.jour1CoutParTelechargement),
-      eur(caserneDerived.jour2CoutParTelechargement),
+      ...joursStats.map((st) => eur(st.coutParTelechargement)),
       eur(caserneDerived.coutParTelechargement),
     ],
     [
       "Coût par essai",
-      eur(caserneDerived.jour1CoutParEssai),
-      eur(caserneDerived.jour2CoutParEssai),
+      ...joursStats.map((st) => eur(st.coutParEssai)),
       eur(caserneDerived.coutParEssai),
     ],
   ],
 } as const;
 
-/** KPI du Jour 1 seul, coûts unitaires du jour. */
-export const caserneJour1Kpis = [
-  { label: "Dépense", value: eur(j1.depense, 0) },
-  { label: "Impressions", value: num(j1.impressions) },
-  { label: "Téléchargements", value: num(j1.telechargements) },
-  { label: "Essais gratuits démarrés", value: num(j1.essais) },
-  { label: "Téléchargement → essai", value: pct(caserneDerived.jour1TauxEssai, 1) },
-  { label: "CPM", value: eur(caserneDerived.jour1Cpm) },
-  { label: "Coût par téléchargement", value: eur(caserneDerived.jour1CoutParTelechargement) },
-  { label: "Coût par essai", value: eur(caserneDerived.jour1CoutParEssai) },
-] as const;
+export const caserneJour1Kpis = kpisJour(0, "Essais gratuits démarrés");
+export const caserneJour2Kpis = kpisJour(1, "Essais démarrés");
+export const caserneJour3Kpis = kpisJour(2, "Essais démarrés");
+export const caserneJour4Kpis = kpisJour(3, "Essais démarrés");
+export const caserneJour5Kpis = kpisJour(4, "Essais démarrés");
 
-/** KPI du Jour 2 seul. */
-export const caserneJour2Kpis = [
-  { label: "Dépense", value: eur(j2.depense, 0) },
-  { label: "Impressions", value: num(j2.impressions) },
-  { label: "Téléchargements", value: num(j2.telechargements) },
-  { label: "Essais démarrés", value: num(j2.essais) },
-  { label: "Téléchargement → essai", value: pct(caserneDerived.jour2TauxEssai, 1) },
-  { label: "CPM", value: eur(caserneDerived.jour2Cpm) },
-  { label: "Coût par téléchargement", value: eur(caserneDerived.jour2CoutParTelechargement) },
-  { label: "Coût par essai", value: eur(caserneDerived.jour2CoutParEssai) },
-] as const;
-
-/** Étapes du tunnel complet sur 2 jours, en valeur absolue et en part de l’étape précédente. */
+/** Étapes du tunnel complet sur 5 jours, en valeur absolue et en part de l’étape précédente. */
 export const caserneFunnel = [
   {
     label: "Impressions",
@@ -163,7 +186,45 @@ export const caserneFunnel = [
     display: num(r.essais),
     ratio: pct(caserneDerived.tauxEssai, 1) + " des téléchargements",
   },
+  {
+    label: "Abonnements payants",
+    sub: "conversions de la cohorte J1-J2",
+    value: r.abonnements,
+    display: num(r.abonnements),
+    ratio: pct(caserneDerived.tauxConversionCohorte, 1) + " des 14 essais des deux premiers jours",
+  },
 ] as const;
+
+export const caserneMonetisation = [
+  { label: "Prix de l’abonnement mensuel", value: eur(r.prixAbonnement) },
+  { label: "Essais gratuits J1-J2", value: num(r.essaisCohorteJ1J2) },
+  { label: "Abonnements payants acquis", value: num(r.abonnements) },
+  {
+    label: "Conversion essai → abonnement J1-J2",
+    value: pct(caserneDerived.tauxConversionCohorte, 1),
+  },
+  { label: "Revenus mensuels récurrents bruts", value: eur(caserneDerived.revenuMensuel) },
+  { label: "Dépenses publicitaires cumulées", value: eurAmt(r.depense) },
+  {
+    label: "Coût publicitaire par abonné payant acquis à ce stade",
+    value: eur(caserneDerived.coutParAbonne),
+  },
+  {
+    label: "Écart revenus du premier mois – dépenses Ads",
+    value: eur(caserneDerived.ecartPremierMois),
+  },
+] as const;
+
+export const caserneRentabilite = {
+  head: ["Scénario", "Abonnés payants totaux", "Revenus mensuels bruts"],
+  rows: [
+    ["Situation simulée actuelle", "4", eur(4 * r.prixAbonnement)],
+    ["+ 8 conversions supplémentaires", "12", eur(12 * r.prixAbonnement)],
+    ["+ 11 conversions supplémentaires", "15", eur(15 * r.prixAbonnement)],
+    ["+ 12 conversions supplémentaires", "16", eur(16 * r.prixAbonnement)],
+    ["+ 17 conversions supplémentaires", "21", eur(21 * r.prixAbonnement)],
+  ],
+} as const;
 
 /** Les trois points validés par la campagne. */
 export const caserneValide = [
@@ -371,6 +432,6 @@ export const navLinks = [apps.caserne, apps.gdlp] as const;
 
 export const reportMeta = {
   ref: "RAPPORT ADS · N° 1",
-  periode: "Bilan des 2 premiers jours de diffusion",
+  periode: "Bilan des 5 premiers jours de diffusion",
   canal: "Meta Ads",
 } as const;

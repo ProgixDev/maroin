@@ -30,8 +30,14 @@ export const caserneRaw = {
 const r = caserneRaw;
 
 type Jour = (typeof caserneJours)[number];
+type JourStats = {
+  tauxEssai: number;
+  cpm: number;
+  coutParTelechargement: number;
+  coutParEssai: number;
+};
 
-function statsJour(j: Jour) {
+function statsJour(j: Jour): JourStats {
   return {
     tauxEssai: (j.essais / j.telechargements) * 100,
     cpm: (j.depense / j.impressions) * 1000,
@@ -40,7 +46,14 @@ function statsJour(j: Jour) {
   };
 }
 
-const joursStats = caserneJours.map(statsJour);
+const [jour1, jour2, jour3, jour4, jour5] = caserneJours;
+const joursStats: readonly [JourStats, JourStats, JourStats, JourStats, JourStats] = [
+  statsJour(jour1),
+  statsJour(jour2),
+  statsJour(jour3),
+  statsJour(jour4),
+  statsJour(jour5),
+];
 
 function cumulJusqua(n: number) {
   const slice = caserneJours.slice(0, n);
@@ -53,7 +66,14 @@ function cumulJusqua(n: number) {
   };
 }
 
-export const caserneCumuls = [2, 3, 4, 5].map(cumulJusqua);
+type Cumul = ReturnType<typeof cumulJusqua>;
+
+export const caserneCumuls: readonly [Cumul, Cumul, Cumul, Cumul] = [
+  cumulJusqua(2),
+  cumulJusqua(3),
+  cumulJusqua(4),
+  cumulJusqua(5),
+];
 
 /** Ratios dérivés, arrondis à l’affichage seulement. */
 export const caserneDerived = {
@@ -85,9 +105,7 @@ export const fmt = { eur, pct, num, dec };
 
 const eurAmt = (n: number) => (Number.isInteger(n) ? eur(n, 0) : eur(n, 2));
 
-function kpisJour(i: number, essaisLabel: string) {
-  const j = caserneJours[i];
-  const st = joursStats[i];
+function kpisJour(j: Jour, st: JourStats, essaisLabel: string) {
   return [
     { label: "Dépense", value: eurAmt(j.depense) },
     { label: "Impressions", value: num(j.impressions) },
@@ -157,11 +175,11 @@ export const caserneTableJours = {
   ],
 } as const;
 
-export const caserneJour1Kpis = kpisJour(0, "Essais gratuits démarrés");
-export const caserneJour2Kpis = kpisJour(1, "Essais démarrés");
-export const caserneJour3Kpis = kpisJour(2, "Essais démarrés");
-export const caserneJour4Kpis = kpisJour(3, "Essais démarrés");
-export const caserneJour5Kpis = kpisJour(4, "Essais démarrés");
+export const caserneJour1Kpis = kpisJour(jour1, joursStats[0], "Essais gratuits démarrés");
+export const caserneJour2Kpis = kpisJour(jour2, joursStats[1], "Essais démarrés");
+export const caserneJour3Kpis = kpisJour(jour3, joursStats[2], "Essais démarrés");
+export const caserneJour4Kpis = kpisJour(jour4, joursStats[3], "Essais démarrés");
+export const caserneJour5Kpis = kpisJour(jour5, joursStats[4], "Essais démarrés");
 
 /** Étapes du tunnel complet sur 5 jours, en valeur absolue et en part de l’étape précédente. */
 export const caserneFunnel = [

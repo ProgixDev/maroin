@@ -32,16 +32,9 @@ import {
 
 const d = caserneDerived;
 const r = caserneRaw;
-const j1 = caserneJours[0];
-const j2 = caserneJours[1];
-const j3 = caserneJours[2];
-const j4 = caserneJours[3];
-const j5 = caserneJours[4];
-const c2 = caserneCumuls[0];
-const c3 = caserneCumuls[1];
-const c4 = caserneCumuls[2];
-const c5 = caserneCumuls[3];
-const s = d.jours;
+const [j1, j2, j3, j4, j5] = caserneJours;
+const [c2, c3, c4, c5] = caserneCumuls;
+const [s1, s2, s3, s4, s5] = d.jours;
 
 /** Bilan des 5 premiers jours de campagne Meta Ads pour Caserne, segment Pompier. */
 export function CaserneReport() {
@@ -112,14 +105,10 @@ export function CaserneReport() {
           <b>{fmt.num(j1.essais)} essais gratuits</b>.
         </P>
         <Table head={["KPI", "Valeur"]} rows={caserneJour1Kpis} />
-        <Callout
-          icon="✓"
-          variant="ok"
-          title={`${fmt.pct(s[0].tauxEssai, 1)} téléchargement → essai`}
-        >
+        <Callout icon="✓" variant="ok" title={`${fmt.pct(s1.tauxEssai, 1)} téléchargement → essai`}>
           Sur {j1.telechargements} personnes qui téléchargent Caserne, {j1.essais} démarrent
           l’essai. Dès le premier jour, le trafic n’est pas seulement curieux : une part réelle
-          passe à l’action, pour <b>{fmt.eur(s[0].coutParEssai)}</b> par essai.
+          passe à l’action, pour <b>{fmt.eur(s1.coutParEssai)}</b> par essai.
         </Callout>
       </Section>
 
@@ -132,8 +121,8 @@ export function CaserneReport() {
         </P>
         <Table head={["KPI Jour 2", "Valeur"]} rows={caserneJour2Kpis} />
         <P>
-          Le taux d’essai reste du même ordre (<b>{fmt.pct(s[1].tauxEssai, 1)}</b> après{" "}
-          <b>{fmt.pct(s[0].tauxEssai, 1)}</b> la veille). Le coût par téléchargement reste sous 1 €.
+          Le taux d’essai reste du même ordre (<b>{fmt.pct(s2.tauxEssai, 1)}</b> après{" "}
+          <b>{fmt.pct(s1.tauxEssai, 1)}</b> la veille). Le coût par téléchargement reste sous 1 €.
           La campagne ne s’essouffle pas : elle livre un deuxième jour comparable, avec un budget
           légèrement plus bas.
         </P>
@@ -153,8 +142,8 @@ export function CaserneReport() {
         </P>
         <Table head={["KPI Jour 3", "Valeur"]} rows={caserneJour3Kpis} />
         <P>
-          Le taux d’essai reste du même ordre (<b>{fmt.pct(s[2].tauxEssai, 1)}</b> après{" "}
-          <b>{fmt.pct(s[1].tauxEssai, 1)}</b> la veille). Le coût par téléchargement reste sous 1 €.
+          Le taux d’essai reste du même ordre (<b>{fmt.pct(s3.tauxEssai, 1)}</b> après{" "}
+          <b>{fmt.pct(s2.tauxEssai, 1)}</b> la veille). Le coût par téléchargement reste sous 1 €.
           La campagne ne s’essouffle pas : elle livre un troisième jour comparable, avec un budget
           plus élevé.
         </P>
@@ -174,8 +163,8 @@ export function CaserneReport() {
         </P>
         <Table head={["KPI Jour 4", "Valeur"]} rows={caserneJour4Kpis} />
         <P>
-          Le taux d’essai reste du même ordre (<b>{fmt.pct(s[3].tauxEssai, 1)}</b> après{" "}
-          <b>{fmt.pct(s[2].tauxEssai, 1)}</b> la veille). Le coût par téléchargement reste sous 1 €.
+          Le taux d’essai reste du même ordre (<b>{fmt.pct(s4.tauxEssai, 1)}</b> après{" "}
+          <b>{fmt.pct(s3.tauxEssai, 1)}</b> la veille). Le coût par téléchargement reste sous 1 €.
           La campagne ne s’essouffle pas : elle livre un quatrième jour comparable, avec un budget
           légèrement plus élevé.
         </P>
@@ -195,8 +184,8 @@ export function CaserneReport() {
         </P>
         <Table head={["KPI Jour 5", "Valeur"]} rows={caserneJour5Kpis} />
         <P>
-          Le taux d’essai reste du même ordre (<b>{fmt.pct(s[4].tauxEssai, 1)}</b> après{" "}
-          <b>{fmt.pct(s[3].tauxEssai, 1)}</b> la veille). Le coût par téléchargement reste sous 1 €.
+          Le taux d’essai reste du même ordre (<b>{fmt.pct(s5.tauxEssai, 1)}</b> après{" "}
+          <b>{fmt.pct(s4.tauxEssai, 1)}</b> la veille). Le coût par téléchargement reste sous 1 €.
           La campagne ne s’essouffle pas : elle livre un cinquième jour comparable, avec un budget
           légèrement plus élevé.
         </P>
